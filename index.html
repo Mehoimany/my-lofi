@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensory Bliss // Lofi Deck</title>
+    <title>Sensory Bliss // Matrix</title>
     <style>
         :root { --neon-blue: #00f3ff; --dark-bg: #0a0a0c; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--dark-bg); color: #fff; font-family: 'Courier New', monospace; overflow: hidden; }
@@ -14,9 +14,11 @@
         .header { border-left: 4px solid var(--neon-blue); padding-left: 15px; }
         .header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 4px; color: var(--neon-blue); }
         #clock { font-size: 4rem; font-weight: 900; text-shadow: 0 0 20px var(--neon-blue); }
-        .controls { display: flex; gap: 20px; }
-        button { background: rgba(255,255,255,0.1); border: 1px solid #fff; color: #fff; padding: 10px 25px; cursor: pointer; font-family: inherit; transition: 0.3s; backdrop-filter: blur(5px); }
+        .controls { display: flex; gap: 15px; flex-wrap: wrap; }
+        button { background: rgba(255,255,255,0.05); border: 1px solid #fff; color: #fff; padding: 12px 20px; cursor: pointer; font-family: inherit; transition: 0.3s; backdrop-filter: blur(5px); font-size: 0.8rem; }
         button:hover { background: #fff; color: #000; box-shadow: 0 0 15px #fff; }
+        .status-box { text-align: right; line-height: 1.4; }
+        #genre-display { color: var(--neon-blue); font-weight: bold; }
     </style>
 </head>
 <body>
@@ -30,20 +32,22 @@
 
     <div class="interface">
         <div class="header">
-            <h1>SENSORY BLISS // V.03</h1>
-            <p>WISCONSIN_NODE_STATION</p>
+            <h1>SENSORY BLISS // MATRIX</h1>
+            <p>MONTELLO_BROADCAST_ACTIVE</p>
             <div id="clock">00:00</div>
         </div>
 
         <div class="bottom-bar">
             <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                 <div class="controls">
-                    <button onclick="unmute()">[ UNMUTE / WAKE UP ]</button>
-                    <button onclick="changeStation()">[ NEXT VIBE ]</button>
+                    <button onclick="unmute()">[ WAKE UP ]</button>
+                    <button onclick="changeGenre()" style="border-color: var(--neon-blue);">[ CHANGE VIBE ]</button>
+                    <button onclick="nextInGenre()">[ KEEP VIBE ]</button>
                 </div>
-                <div style="text-align: right;">
-                    <div style="font-size: 0.7rem; opacity: 0.5;">MONTELLO, WI // LOGGED</div>
-                    <div>SIGNAL: STABLE</div>
+                <div class="status-box">
+                    <div id="genre-display">GENRE: CHILL LOFI</div>
+                    <div id="station-count" style="font-size: 0.7rem; opacity: 0.6;">TRACK: 1 / 3</div>
+                    <div style="font-size: 0.7rem; opacity: 0.4;">SIGNAL: SECURE</div>
                 </div>
             </div>
         </div>
@@ -51,27 +55,63 @@
 
     <script>
         const iframe = document.getElementById('lofi-stream');
-        const stations = ['jfKfPfyJRdk', 'py_wkguE9tA', '9hIG2En8g10', 'lP26UCnoH9s'];
-        let currentIdx = 0;
+        
+        // The Vibe Matrix
+        const matrix = [
+            {
+                name: "CHILL LOFI",
+                videos: ['jfKfPfyJRdk', 'n61ULEU7CO0', 'lP26UCnoH9s']
+            },
+            {
+                name: "NEON SYNTH",
+                videos: ['4xDzrJKXOOY', 'MVPTGNGiI-4', '9hIG2En8g10']
+            },
+            {
+                name: "PROG / AMBIENT",
+                videos: ['py_wkguE9tA', 'S9uTS37-G38', '5p28B-x8wY8'] 
+            }
+        ];
 
-        // Force a "Handshake" with the YouTube Iframe
+        let currentGenreIdx = 0;
+        let currentVideoIdx = 0;
+
+        function updateDisplay() {
+            const genre = matrix[currentGenreIdx];
+            document.getElementById('genre-display').innerText = `GENRE: ${genre.name}`;
+            document.getElementById('station-count').innerText = `TRACK: ${currentVideoIdx + 1} / ${genre.videos.length}`;
+        }
+
+        function loadVideo() {
+            const videoId = matrix[currentGenreIdx].videos[currentVideoIdx];
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&controls=0&loop=1&playlist=${videoId}&enablejsapi=1&origin=null`;
+            updateDisplay();
+        }
+
+        function changeGenre() {
+            currentGenreIdx = (currentGenreIdx + 1) % matrix.length;
+            currentVideoIdx = 0; // Reset to first video of new genre
+            loadVideo();
+        }
+
+        function nextInGenre() {
+            const currentGenreVideos = matrix[currentGenreIdx].videos;
+            currentVideoIdx = (currentVideoIdx + 1) % currentGenreVideos.length;
+            loadVideo();
+        }
+
         function unmute() {
             iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'unmute' }), '*');
             iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo' }), '*');
-        }
-
-        function changeStation() {
-            currentIdx = (currentIdx + 1) % stations.length;
-            const id = stations[currentIdx];
-            iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=0&controls=0&loop=1&playlist=${id}&enablejsapi=1&origin=null`;
         }
 
         function updateClock() {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
         }
+        
         setInterval(updateClock, 1000);
         updateClock();
+        updateDisplay();
     </script>
 </body>
 </html>
