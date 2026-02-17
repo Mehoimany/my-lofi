@@ -3,60 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mehoimany's lofi // V.04</title>
+    <title>mehoimany's lofi // INFINITE</title>
     <style>
         :root { --neon-blue: #00f3ff; --dark-bg: #0a0a0c; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--dark-bg); color: #fff; font-family: 'Courier New', monospace; overflow: hidden; }
-        
-        /* CRT Scanline Overlay */
-        body::after { 
-            content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; 
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); 
-            z-index: 20; background-size: 100% 2px, 3px 100%; pointer-events: none; 
-        }
-
+        body::after { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 20; background-size: 100% 2px, 3px 100%; pointer-events: none; }
         .video-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: hidden; pointer-events: none; }
         #lofi-stream { position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh; transform: translate(-50%, -50%) scale(1.6); border: none; }
-        
-        .interface { 
-            position: relative; z-index: 30; height: 100vh; display: flex; flex-direction: column; 
-            justify-content: space-between; padding: 40px; box-sizing: border-box; 
-            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.6) 100%); 
-        }
-
+        .interface { position: relative; z-index: 30; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 40px; box-sizing: border-box; background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.6) 100%); }
         .header { border-left: 4px solid var(--neon-blue); padding-left: 15px; }
         .header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 4px; color: var(--neon-blue); text-transform: uppercase; }
         #clock { font-size: 4rem; font-weight: 900; text-shadow: 0 0 20px var(--neon-blue); }
-        
         .controls { display: flex; gap: 15px; flex-wrap: wrap; }
-        button { 
-            background: rgba(255,255,255,0.05); border: 1px solid #fff; color: #fff; 
-            padding: 12px 20px; cursor: pointer; font-family: inherit; transition: 0.3s; 
-            backdrop-filter: blur(5px); font-size: 0.8rem; 
-        }
+        button { background: rgba(255,255,255,0.05); border: 1px solid #fff; color: #fff; padding: 12px 20px; cursor: pointer; font-family: inherit; transition: 0.3s; backdrop-filter: blur(5px); font-size: 0.8rem; text-transform: uppercase; }
         button:hover { background: #fff; color: #000; box-shadow: 0 0 15px #fff; }
-        
-        .status-box { text-align: right; line-height: 1.4; }
         #genre-display { color: var(--neon-blue); font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body>
-
-    <div class="video-container">
-        <iframe id="lofi-stream" 
-            src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1&controls=0&loop=1&playlist=jfKfPfyJRdk&enablejsapi=1&origin=null" 
-            allow="autoplay; encrypted-media">
-        </iframe>
-    </div>
-
+    <div class="video-container"><iframe id="lofi-stream" allow="autoplay"></iframe></div>
     <div class="interface">
         <div class="header">
             <h1>mehoimany's lofi</h1>
             <p>BROADCAST_MONTELLO_WI</p>
-            <div id="clock">00:00</div>
+            <div id="clock">--:-- --</div>
         </div>
-
         <div class="bottom-bar">
             <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                 <div class="controls">
@@ -64,7 +35,64 @@
                     <button onclick="changeGenre()" style="border-color: var(--neon-blue);">[ CHANGE VIBE ]</button>
                     <button onclick="nextInGenre()">[ KEEP VIBE ]</button>
                 </div>
-                <div class="status-box">
-                    <div id="genre-display">GENRE: CLASSIC LOFI</div>
-                    <div id="station-count" style="font-size: 0.7rem; opacity: 0.6;">STATION: 1 / 6</div>
-                    <div style="font-
+                <div style="text-align: right;">
+                    <div id="genre-display">GENRE: INITIALIZING...</div>
+                    <div style="font-size: 0.7rem; opacity: 0.6;">MODE: INFINITE RANDOM</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const iframe = document.getElementById('lofi-stream');
+        
+        // Massive, diverse library for "infinite" feel
+        const matrix = [
+            { name: "CLASSIC LOFI", videos: ['El7J--xd1nw', 'TURm7W96v_0', '9FmK-pLwNfM', 'pLcw3dK1yU0', 'tNkZsRW7h2c', 'wYv_9mNqR-U', 'n61ULEU7CO0', '5yx6BWbL1sA', 'DWcUY85I5Rc'] },
+            { name: "NEON RETRO", videos: ['w4TNGhSj2tc', '9hIG2En8g10', 'MVPTGNGiI-4', 'UedTcKeH68g', 'SNoVPlWdr_o', 'fI4O0A9NqUo', '4xDzrJKXOOY', 'ZonW792O_6w'] },
+            { name: "PROG / AMBIENT", videos: ['py_wkguE9tA', 'S9uTS37-G38', '5p28B-x8wY8', 'cfBhdBUrRN8', 'nLOQVu_BiV4', 'e38viBWO43g', 'D0mS_WpG668', 'OzdRE_vVInI'] },
+            { name: "COZY CAFE", videos: ['lP26UCnoH9s', 'vSloE7hN93o', 'GvX6p5v2QkI', 'h2Y6hSjE9yE', 'v_y_O7u7lK8', 'rUxyKA_-grg', '1uM-B9u8l_s'] },
+            { name: "RAINY NIGHT", videos: ['v_y_O7u7lK8', 'jfKfPfyJRdk', 'L_u6L6_WreU', '30-Yy8Hk2E0', '0FcNGuKh-J8', '6ThAEPnLhH0', 'q76bMs-NwRk'] },
+            { name: "WTF / UNKNOWN", videos: ['9pLgK0qV_8U', 'K7vJj-EmsL4', '8S_S0m0tXRE', 'm_NnC6E7Vyo', 'Jz_fE6_zN0o', 'YVpXU_364-s', 'S_S0m0tXRE'] }
+        ];
+
+        let gIdx = 0;
+
+        function load(randomize = true) {
+            const genre = matrix[gIdx];
+            // Infinite logic: pick a random index from the genre's array
+            const vIdx = Math.floor(Math.random() * genre.videos.length);
+            const id = genre.videos[vIdx];
+            
+            iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}&enablejsapi=1`;
+            document.getElementById('genre-display').innerText = `GENRE: ${genre.name}`;
+        }
+
+        function changeGenre() {
+            gIdx = (gIdx + 1) % matrix.length;
+            load();
+        }
+
+        function nextInGenre() {
+            load(); // Just calls load again to pick a new random video in the same gIdx
+        }
+
+        function unmute() {
+            // Force reload with audio on - the only way to bypass browser auto-block reliably
+            iframe.src = iframe.src.replace("mute=1", "mute=0");
+        }
+
+        function tick() {
+            const now = new Date();
+            let h = now.getHours();
+            const m = now.getMinutes().toString().padStart(2, '0');
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            document.getElementById('clock').innerText = `${h}:${m} ${ampm}`;
+        }
+
+        setInterval(tick, 1000);
+        tick();
+        load();
+    </script>
+</body>
+</html>
