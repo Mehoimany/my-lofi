@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensory Bliss // Matrix</title>
+    <title>mehoimany's lofi // V.04</title>
     <style>
         :root { --neon-blue: #00f3ff; --dark-bg: #0a0a0c; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--dark-bg); color: #fff; font-family: 'Courier New', monospace; overflow: hidden; }
         body::after { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 20; background-size: 100% 2px, 3px 100%; pointer-events: none; }
         .video-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: hidden; pointer-events: none; }
-        #lofi-stream { position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh; transform: translate(-50%, -50%) scale(1.5); border: none; }
+        #lofi-stream { position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh; transform: translate(-50%, -50%) scale(1.6); border: none; }
         .interface { position: relative; z-index: 30; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 40px; box-sizing: border-box; background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.6) 100%); }
         .header { border-left: 4px solid var(--neon-blue); padding-left: 15px; }
-        .header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 4px; color: var(--neon-blue); }
+        .header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 4px; color: var(--neon-blue); text-transform: uppercase; }
         #clock { font-size: 4rem; font-weight: 900; text-shadow: 0 0 20px var(--neon-blue); }
         .controls { display: flex; gap: 15px; flex-wrap: wrap; }
         button { background: rgba(255,255,255,0.05); border: 1px solid #fff; color: #fff; padding: 12px 20px; cursor: pointer; font-family: inherit; transition: 0.3s; backdrop-filter: blur(5px); font-size: 0.8rem; }
@@ -32,8 +32,8 @@
 
     <div class="interface">
         <div class="header">
-            <h1>SENSORY BLISS // MATRIX</h1>
-            <p>MONTELLO_BROADCAST_ACTIVE</p>
+            <h1>mehoimany's lofi</h1>
+            <p>BROADCAST_MONTELLO_WI</p>
             <div id="clock">00:00</div>
         </div>
 
@@ -46,8 +46,8 @@
                 </div>
                 <div class="status-box">
                     <div id="genre-display">GENRE: CHILL LOFI</div>
-                    <div id="station-count" style="font-size: 0.7rem; opacity: 0.6;">TRACK: 1 / 3</div>
-                    <div style="font-size: 0.7rem; opacity: 0.4;">SIGNAL: SECURE</div>
+                    <div id="station-count" style="font-size: 0.7rem; opacity: 0.6;">TRACK: 1 / 6</div>
+                    <div style="font-size: 0.7rem; opacity: 0.4;">MATRIX_V.04</div>
                 </div>
             </div>
         </div>
@@ -56,19 +56,30 @@
     <script>
         const iframe = document.getElementById('lofi-stream');
         
-        // The Vibe Matrix
         const matrix = [
             {
-                name: "CHILL LOFI",
-                videos: ['jfKfPfyJRdk', 'n61ULEU7CO0', 'lP26UCnoH9s']
+                name: "CLASSIC LOFI",
+                videos: ['El7J--xd1nw', 'TURm7W96v_0', '9FmK-pLwNfM', 'pLcw3dK1yU0', 'tNkZsRW7h2c', 'wYv_9mNqR-U']
             },
             {
-                name: "NEON SYNTH",
-                videos: ['4xDzrJKXOOY', 'MVPTGNGiI-4', '9hIG2En8g10']
+                name: "NEON RETRO",
+                videos: ['w4TNGhSj2tc', '9hIG2En8g10', 'MVPTGNGiI-4', 'UedTcKeH68g', 'SNoVPlWdr_o', 'fI4O0A9NqUo']
             },
             {
                 name: "PROG / AMBIENT",
-                videos: ['py_wkguE9tA', 'S9uTS37-G38', '5p28B-x8wY8'] 
+                videos: ['py_wkguE9tA', 'S9uTS37-G38', '5p28B-x8wY8', 'cfBhdBUrRN8', 'nLOQVu_BiV4', 'e38viBWO43g']
+            },
+            {
+                name: "COZY CAFE",
+                videos: ['lP26UCnoH9s', 'vSloE7hN93o', 'GvX6p5v2QkI', 'h2Y6hSjE9yE', 'v_y_O7u7lK8', 'rUxyKA_-grg']
+            },
+            {
+                name: "RAINY NIGHT",
+                videos: ['v_y_O7u7lK8', 'jfKfPfyJRdk', 'L_u6L6_WreU', '30-Yy8Hk2E0', '0FcNGuKh-J8', '6ThAEPnLhH0']
+            },
+            {
+                name: "WTF / UNKNOWN",
+                videos: ['9pLgK0qV_8U', 'K7vJj-EmsL4', '8S_S0m0tXRE', 'n61ULEU7CO0', 'm_NnC6E7Vyo', 'Jz_fE6_zN0o']
             }
         ];
 
@@ -89,13 +100,12 @@
 
         function changeGenre() {
             currentGenreIdx = (currentGenreIdx + 1) % matrix.length;
-            currentVideoIdx = 0; // Reset to first video of new genre
+            currentVideoIdx = 0;
             loadVideo();
         }
 
         function nextInGenre() {
-            const currentGenreVideos = matrix[currentGenreIdx].videos;
-            currentVideoIdx = (currentVideoIdx + 1) % currentGenreVideos.length;
+            currentVideoIdx = (currentVideoIdx + 1) % matrix[currentGenreIdx].videos.length;
             loadVideo();
         }
 
