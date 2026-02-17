@@ -7,18 +7,38 @@
     <style>
         :root { --neon-blue: #00f3ff; --dark-bg: #0a0a0c; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--dark-bg); color: #fff; font-family: 'Courier New', monospace; overflow: hidden; }
-        body::after { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 20; background-size: 100% 2px, 3px 100%; pointer-events: none; }
+        
+        /* CRT Scanline Overlay */
+        body::after { 
+            content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; 
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); 
+            z-index: 20; background-size: 100% 2px, 3px 100%; pointer-events: none; 
+        }
+
         .video-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: hidden; pointer-events: none; }
         #lofi-stream { position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh; transform: translate(-50%, -50%) scale(1.6); border: none; }
-        .interface { position: relative; z-index: 30; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 40px; box-sizing: border-box; background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.6) 100%); }
+        
+        .interface { 
+            position: relative; z-index: 30; height: 100vh; display: flex; flex-direction: column; 
+            justify-content: space-between; padding: 40px; box-sizing: border-box; 
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.6) 100%); 
+        }
+
         .header { border-left: 4px solid var(--neon-blue); padding-left: 15px; }
         .header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 4px; color: var(--neon-blue); text-transform: uppercase; }
         #clock { font-size: 4rem; font-weight: 900; text-shadow: 0 0 20px var(--neon-blue); }
+        
         .controls { display: flex; gap: 15px; flex-wrap: wrap; }
-        button { background: rgba(255,255,255,0.05); border: 1px solid #fff; color: #fff; padding: 12px 20px; cursor: pointer; font-family: inherit; transition: 0.3s; backdrop-filter: blur(5px); font-size: 0.8rem; }
+        button { 
+            background: rgba(255,255,255,0.05); border: 1px solid #fff; color: #fff; 
+            padding: 12px 20px; cursor: pointer; font-family: inherit; transition: 0.3s; 
+            backdrop-filter: blur(5px); font-size: 0.8rem; 
+        }
         button:hover { background: #fff; color: #000; box-shadow: 0 0 15px #fff; }
+        
         .status-box { text-align: right; line-height: 1.4; }
-        #genre-display { color: var(--neon-blue); font-weight: bold; }
+        #genre-display { color: var(--neon-blue); font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -45,83 +65,6 @@
                     <button onclick="nextInGenre()">[ KEEP VIBE ]</button>
                 </div>
                 <div class="status-box">
-                    <div id="genre-display">GENRE: CHILL LOFI</div>
-                    <div id="station-count" style="font-size: 0.7rem; opacity: 0.6;">TRACK: 1 / 6</div>
-                    <div style="font-size: 0.7rem; opacity: 0.4;">MATRIX_V.04</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const iframe = document.getElementById('lofi-stream');
-        
-        const matrix = [
-            {
-                name: "CLASSIC LOFI",
-                videos: ['El7J--xd1nw', 'TURm7W96v_0', '9FmK-pLwNfM', 'pLcw3dK1yU0', 'tNkZsRW7h2c', 'wYv_9mNqR-U']
-            },
-            {
-                name: "NEON RETRO",
-                videos: ['w4TNGhSj2tc', '9hIG2En8g10', 'MVPTGNGiI-4', 'UedTcKeH68g', 'SNoVPlWdr_o', 'fI4O0A9NqUo']
-            },
-            {
-                name: "PROG / AMBIENT",
-                videos: ['py_wkguE9tA', 'S9uTS37-G38', '5p28B-x8wY8', 'cfBhdBUrRN8', 'nLOQVu_BiV4', 'e38viBWO43g']
-            },
-            {
-                name: "COZY CAFE",
-                videos: ['lP26UCnoH9s', 'vSloE7hN93o', 'GvX6p5v2QkI', 'h2Y6hSjE9yE', 'v_y_O7u7lK8', 'rUxyKA_-grg']
-            },
-            {
-                name: "RAINY NIGHT",
-                videos: ['v_y_O7u7lK8', 'jfKfPfyJRdk', 'L_u6L6_WreU', '30-Yy8Hk2E0', '0FcNGuKh-J8', '6ThAEPnLhH0']
-            },
-            {
-                name: "WTF / UNKNOWN",
-                videos: ['9pLgK0qV_8U', 'K7vJj-EmsL4', '8S_S0m0tXRE', 'n61ULEU7CO0', 'm_NnC6E7Vyo', 'Jz_fE6_zN0o']
-            }
-        ];
-
-        let currentGenreIdx = 0;
-        let currentVideoIdx = 0;
-
-        function updateDisplay() {
-            const genre = matrix[currentGenreIdx];
-            document.getElementById('genre-display').innerText = `GENRE: ${genre.name}`;
-            document.getElementById('station-count').innerText = `TRACK: ${currentVideoIdx + 1} / ${genre.videos.length}`;
-        }
-
-        function loadVideo() {
-            const videoId = matrix[currentGenreIdx].videos[currentVideoIdx];
-            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&controls=0&loop=1&playlist=${videoId}&enablejsapi=1&origin=null`;
-            updateDisplay();
-        }
-
-        function changeGenre() {
-            currentGenreIdx = (currentGenreIdx + 1) % matrix.length;
-            currentVideoIdx = 0;
-            loadVideo();
-        }
-
-        function nextInGenre() {
-            currentVideoIdx = (currentVideoIdx + 1) % matrix[currentGenreIdx].videos.length;
-            loadVideo();
-        }
-
-        function unmute() {
-            iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'unmute' }), '*');
-            iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo' }), '*');
-        }
-
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
-        }
-        
-        setInterval(updateClock, 1000);
-        updateClock();
-        updateDisplay();
-    </script>
-</body>
-</html>
+                    <div id="genre-display">GENRE: CLASSIC LOFI</div>
+                    <div id="station-count" style="font-size: 0.7rem; opacity: 0.6;">STATION: 1 / 6</div>
+                    <div style="font-
